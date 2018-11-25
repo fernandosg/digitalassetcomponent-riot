@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <title>DigitalAssetGallery - A RiotJS component</title>
+</head>
+<body>
+  <main>
+    <digital-asset-gallery></digital-asset-gallery>
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/riot/3.3.0/riot+compiler.min.js"></script>
+  <script type="text/javascript" src="build/app.js"></script>
+  <script type="text/javascript">
+      var navs_links = [{"url": "/electronic", "label":"Electronic"}, {"url":"/art", "label":"Art"}];
+      var gallery = [{"type": "image", "id": 2, "name": "X.jpg"}];
+  </script>
+  <script type="text/javascript">
+      riot.mount('*', {
+          navs_links: navs_links,
+          gallery: gallery
+      })
+  </script>
+</body>
+</html>
