@@ -8,6 +8,8 @@
 </head>
 <body>
   <main>
+    <button id="display-gallery">Display Gallery</button>
+    <input id="digital_asset_id_field" type="hidden"/>
     <digital-asset-gallery></digital-asset-gallery>
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/riot/3.3.0/riot+compiler.min.js"></script>
@@ -24,7 +26,15 @@
   <script type="text/javascript">
       riot.mount('*', {
           navs_links: navs_links,
-          gallery: gallery
+          gallery: gallery,
+          visible: true,
+          callbackSellectGalleryItem: function(itemid){
+            document.getElementById('digital_asset_id_field').value = itemid;
+          }
+      })
+
+      $("button#display-gallery").click(function(){
+        $("#digital-asset-gallery").modal('show');
       })
   </script>
 </body>
