@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
   <title>DigitalAssetGallery - A RiotJS component</title>
+  <link href="build/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
 </head>
 <body>
   <main>
@@ -13,9 +15,10 @@
 			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 			  crossorigin="anonymous"></script>
   <script type="text/javascript" src="build/app.js"></script>
+  <script type="text/javascript" src="build/js/bootstrap.min.js"></script>
   <script type="text/javascript">
       var navs_links = [{"id": 1, "url": "service.php", "label":"Electronic"}, {"id": 2, "url":"service.php", "label":"Art"}];
-      var gallery = [{"type": "image", "id": 2, "name": "X.jpg"}];
+      var gallery = [{"type": "image", "id": 2, "name": "X.jpg", "image": "https://i.blogs.es/544e7d/650_1000_javascript_logo/450_1000.png"}];
   </script>
   <script type="text/javascript">
       riot.mount('*', {

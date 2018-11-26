@@ -9,9 +9,13 @@
     </aside>
     <div>
       <div each="{item in opts.gallery}">
-        <span>
+        <div>
+          <img src="{item.image}" show={item.image !== ""}/>
+          <div class="element_without_image" show={item.image == null || item.image == undefined || item.image===""}>
+            <span href="javascript:void(0)" class="glyphicon glyphicon-folder-open folder-icon"></span>
+          </div>
           {item.name}
-        </span>
+        </div>
       </div>
     </div>
   </section>
@@ -33,5 +37,6 @@
     this.clickNav = (event) => {
       this.loadGallery(event.target.dataset);
     }
+
   </script>
 </digital-asset-gallery>
