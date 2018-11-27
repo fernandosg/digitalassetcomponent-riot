@@ -6,27 +6,29 @@
           <h4 class="modal-title">File selector</h4>
           <button type="button" class="close" data-dismiss="modal">×</button>
         </header>
-        <section class="row">
-          <aside id="folder_list" class="col-md-4">
-            <div class="tree-menu-container">
-              <ul class="tree-menu">
-                <li class="folder-link-container" each="{nav in opts.navs_links}">
-                  <a class="toggle_list_menu glyphicon glyphicon-chevron-right"></a>
-                  <span class="link" onclick="{this.clickNav}" data-navid={nav.id} data-url="{nav.url}" style="cursor:pointer;">{nav.name}</span>
-                </li>
-              </ul>
-            </div>
-          </aside>
-          <div id="folder_assets" class="col-md-8 folder-assets-block-section">
-            <div class="text-center asset-area" each="{item in opts.gallery}" data-itemid={item.id}  data-itemname={item.attachment_file_name} data-image="{item.attachment_file_name}">
-              <div class="digital-assets-image" onclick="{this.selectGalleryItem}">
-                <img class="img-thumbnail attachment digital_asset_attachment" src="{item.image_url}" show={item.attachment_file_name !== ""} style="width:100%;"/>
-                <span href="javascript:void(0)" show={item.attachment_file_name == null || item.attachment_file_name == undefined || item.attachment_file_name===""} class="glyphicon glyphicon-file file-icon"></span>
+        <div id="upload_asset_modal_body" class="modal-body">
+          <section class="row">
+            <aside id="folder_list" class="col-md-4">
+              <div class="tree-menu-container">
+                <ul class="tree-menu">
+                  <li class="folder-link-container" each="{nav in opts.navs_links}">
+                    <a class="toggle_list_menu glyphicon glyphicon-chevron-right"></a>
+                    <span class="link" onclick="{this.clickNav}" data-navid={nav.id} data-url="{nav.url}" style="cursor:pointer;">{nav.name}</span>
+                  </li>
+                </ul>
               </div>
-              <div>{item.label}</div>
+            </aside>
+            <div id="folder_assets" class="col-md-8 folder-assets-block-section">
+              <div class="text-center asset-area" each="{item in opts.gallery}" data-itemid={item.id}  data-itemname={item.attachment_file_name} data-image="{item.attachment_file_name}">
+                <div class="digital-assets-image" onclick="{this.selectGalleryItem}">
+                  <img class="img-thumbnail attachment digital_asset_attachment" src="{item.image_url}" show={item.attachment_file_name !== ""} style="width:100%;"/>
+                  <span href="javascript:void(0)" show={item.attachment_file_name == null || item.attachment_file_name == undefined || item.attachment_file_name===""} class="glyphicon glyphicon-file file-icon"></span>
+                </div>
+                <div>{item.label}</div>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </div>
   </section>
@@ -100,6 +102,7 @@
     this.loadGallery = (dataset) => {
       actual_navid = dataset.navid;
       page = 1;
+      scrolling = true;
       this.attachNavigating();
       $.ajax({
         method: "GET",
