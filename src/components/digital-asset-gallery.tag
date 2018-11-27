@@ -12,18 +12,18 @@
               <ul class="tree-menu">
                 <li class="folder-link-container" each="{nav in opts.navs_links}">
                   <a class="toggle_list_menu glyphicon glyphicon-chevron-right"></a>
-                  <span class="link" onclick="{this.clickNav}" data-navid={nav.id} data-url="{nav.url}" style="cursor:pointer;">{nav.label}</span>
+                  <span class="link" onclick="{this.clickNav}" data-navid={nav.id} data-url="{nav.url}" style="cursor:pointer;">{nav.name}</span>
                 </li>
               </ul>
             </div>
           </aside>
           <div id="folder_assets" class="col-md-8 folder-assets-block-section">
-            <div class="text-center asset-area" each="{item in opts.gallery}" data-itemid={item.id} data-image="{item.image}">
+            <div class="text-center asset-area" each="{item in opts.gallery}" data-itemid={item.id}  data-itemname={item.attachment_file_name} data-image="{item.attachment_file_name}">
               <div class="digital-assets-image" onclick="{this.selectGalleryItem}">
-                <img class="img-thumbnail attachment digital_asset_attachment" src="{item.image}" show={item.image !== ""} style="width:100%;"/>
-                <span href="javascript:void(0)" show={item.image == null || item.image == undefined || item.image===""} class="glyphicon glyphicon-file file-icon"></span>
+                <img class="img-thumbnail attachment digital_asset_attachment" src="{item.image_url}" show={item.attachment_file_name !== ""} style="width:100%;"/>
+                <span href="javascript:void(0)" show={item.attachment_file_name == null || item.attachment_file_name == undefined || item.attachment_file_name===""} class="glyphicon glyphicon-file file-icon"></span>
               </div>
-              <div>{item.name}</div>
+              <div>{item.label}</div>
             </div>
           </div>
         </section>
@@ -31,23 +31,99 @@
     </div>
   </section>
   <script>
-
+    var page = 0;
+    var self;
+    var tag;
     this.on('mount', function() {
+      self = this;
+      tag = document.getElementById("digital-asset-gallery");
       if(this.opts.visible)
         $("#digital-asset-gallery").modal('show');
+      if(!this.opts.root_path && this.opts.root_path!==""){
+        this.opts.root_path = "/server/";
+      }
+      if(this.opts.tag_id){
+        tag.setAttribute("id", this.opts.tag_id);
+      }
+      this.attachNavigating();
     })
 
-    this.loadGallery = (dataset) => {
-      var self = this;
+    var endpoint_url;
+
+    this.attachNavigating = () =>{
+      paginating = this.opts.paginating;
+      if(paginating){
+        page = 1;
+        $(tag).find("#folder_assets").on('scroll', function() {
+          if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight && paginating) {
+            page++;
+            self.getNextPageUrl();
+          }
+        })
+      }
+    }
+
+    this.getUrlLoadGallery = (dataset) =>{
+      if(this.opts.endpoint_open){
+        var url = this.opts.endpoint_open.replace(this.opts.param_replace_endpoint, dataset[this.opts.param_endpoint]);
+        endpoint_url = url;
+        return url;
+      }
+      return "/server/services.php";
+    }
+
+    this.getNextPageUrl = () =>{
       $.ajax({
         method: "GET",
-        url: "/server/"+dataset.url,
+        url: endpoint_url,
+        data: {"id": actual_navid, "page":page},
+        dataType:"JSON"
+      }).done(function(response){
+        if(response.gallery && response.gallery.length > 0){
+          self.opts.gallery = self.opts.gallery.concat(response.gallery);
+          self.update();
+        }else{
+          paginating = false;
+        }
+      }).fail(function(response){
+        console.log("fallo");
+        console.log(response);
+      })
+    }
+
+    this.loadGallery = (dataset) => {
+      actual_navid = dataset.navid;
+      page = 1;
+      this.attachNavigating();
+      $.ajax({
+        method: "GET",
+        url: self.getUrlLoadGallery(dataset),
         data: {"id": dataset.navid},
         dataType:"JSON"
       }).done(function(response){
+        console.log("cargando");
         self.opts.gallery = response.gallery;
         self.update();
       }).fail(function(response){
+        console.log("fallo");
+        console.log(response);
+      })
+    }
+
+    this.nextPage = (dataset) => {
+      actual_navid = dataset.navid;
+      $.ajax({
+        method: "GET",
+        url: self.getUrlLoadGallery(dataset),
+        data: {"id": dataset.navid},
+        dataType:"JSON"
+      }).done(function(response){
+        console.log("cargando");
+        self.opts.gallery = response.gallery;
+        self.update();
+      }).fail(function(response){
+        console.log("fallo");
+        console.log(response);
       })
     }
 
@@ -63,7 +139,7 @@
       }
       $(parent_container).addClass("active");
       if(this.opts.callbackSellectGalleryItem && parent_container.dataset.itemid){
-        this.opts.callbackSellectGalleryItem(parent_container.dataset.itemid);
+        this.opts.callbackSellectGalleryItem(parent_container.dataset.itemid, parent_container.dataset.itemname);
       }
     }
 
