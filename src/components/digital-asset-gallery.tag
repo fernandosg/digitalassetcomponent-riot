@@ -34,6 +34,7 @@
     var page = 0;
     var self;
     var tag;
+    var scrolling = true;
     this.on('mount', function() {
       self = this;
       tag = document.getElementById("digital-asset-gallery");
@@ -56,8 +57,11 @@
         page = 1;
         $(tag).find("#folder_assets").on('scroll', function() {
           if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight && paginating) {
-            page++;
-            self.getNextPageUrl();
+            if(scrolling){
+              scrolling = false;
+              page++;
+              self.getNextPageUrl();
+            }
           }
         })
       }
@@ -82,6 +86,8 @@
         if(response.gallery && response.gallery.length > 0){
           self.opts.gallery = self.opts.gallery.concat(response.gallery);
           self.update();
+          scrolling = true;
+          setTimeout(function(){ scrolling = true; }, 3000);
         }else{
           paginating = false;
         }
